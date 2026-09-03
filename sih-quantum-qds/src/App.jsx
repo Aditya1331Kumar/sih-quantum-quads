@@ -40,8 +40,8 @@ export default function App() {
     ]);
 
     // Using localhost to align perfectly with standard browser security origins
-    const BACKEND_URL = 'http://localhost:8000/simulate'; 
-
+    const BACKEND_URL ='https://sih-quantum-backend.onrender.com';
+//  'http://localhost:8000/simulate'
     try {
       const response = await fetch(BACKEND_URL, {
         method: 'POST',
