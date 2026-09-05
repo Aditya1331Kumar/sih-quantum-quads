@@ -62,7 +62,7 @@ export default function App() {
     setVerdict('TELEPORTING...');
 
     // Pointing locally on your laptop workspace
-    const BACKEND_URL = 'http://localhost:8000/simulate';
+    const BACKEND_URL = 'https://sih-quantum-backend.onrender.com';
 
     try {
       const response = await fetch(BACKEND_URL, {
