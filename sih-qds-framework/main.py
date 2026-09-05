@@ -7,7 +7,7 @@ from qiskit_aer import AerSimulator
 
 app = FastAPI()
 
-# 🛡️ CORS POLICY CONFIGURATION: Permits safe network communication with your React port (5173)
+# 🛡️ Permissive CORS Policy so your Vercel/Localhost React app can connect cleanly
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -42,19 +42,13 @@ CHARMAP = {
 REVMAP = {v: k for k, v in CHARMAP.items()}
 _last_bit_cache = {"value": None}
 
-# ---------------------------------------------------------------
-# DTO PAYLOAD CLASS STRUCTURE (Aligned perfectly with React state variables)
-# ---------------------------------------------------------------
 class SimulationRequest(BaseModel):
-    basis: str            # Auto-scaled basis marker character
-    message_str: str      # Full alphanumeric text array sent from Alice's input
-    adversary_mode: str   # Active choice: 'none', 'impersonation', etc.
+    message_str: str      # Text typed by user
+    basis_str: str        # Custom matching XZ string typed by user
+    adversary_mode: str   # none, impersonation, intercept_resend, replay, circuit_tamper
 
-# ---------------------------------------------------------------
-# CORE SIMULATOR CIRCUITS PRESERVED FROM 256BIT.PY
-# ---------------------------------------------------------------
 def build_circuit(basis, data_bit, adversary_mode=None):
-    q = QuantumRegister(3, 'q')      # q0=D1, q1=A1, q2=B1
+    q = QuantumRegister(3, 'q')
     c0 = ClassicalRegister(1, 'c0')
     c1 = ClassicalRegister(1, 'c1')
     c2 = ClassicalRegister(1, 'c2')
@@ -76,10 +70,8 @@ def build_circuit(basis, data_bit, adversary_mode=None):
 
     if adversary_mode == "intercept_resend":
         qc.reset(0)
-        if random.random() < 0.5:
-            qc.x(0)
-        if random.random() < 0.5:
-            qc.h(0)
+        if random.random() < 0.5: qc.x(0)
+        if random.random() < 0.5: qc.h(0)
 
     qc.cx(0, 1)
     qc.h(0)
@@ -92,90 +84,91 @@ def build_circuit(basis, data_bit, adversary_mode=None):
         qc.reset(2)
         qc.h(2)
 
-    with qc.if_test((c0, 1)):
-        qc.z(2)
-    with qc.if_test((c1, 1)):
-        qc.x(2)
+    with qc.if_test((c0, 1)): qc.z(2)
+    with qc.if_test((c1, 1)): qc.x(2)
 
-    if basis == "X":
-        qc.h(2)
+    if basis == "X": qc.h(2)
     qc.measure(2, c2)
 
     return qc
 
-def verifier_check(decoded_bit, claimed_bit):
-    return decoded_bit == claimed_bit
-
-def run_bit(basis, true_bit, adversary_mode=None, shots=SHOTS):
+def run_bit(basis, true_bit, adversary_mode=None):
     encode_bit = true_bit
     if adversary_mode == "replay" and _last_bit_cache["value"] is not None:
         encode_bit = _last_bit_cache["value"]
 
     qc = build_circuit(basis, encode_bit, adversary_mode)
     sim = AerSimulator()
-    result = sim.run(qc, shots=shots).result()
+    result = sim.run(qc, shots=SHOTS).result()
     counts = result.get_counts()
 
     mismatches, total = 0, 0
     for outcome, n in counts.items():
         b1_val, a1_val, d1_val = outcome.split()
-        match = verifier_check(b1_val, true_bit)
-        if not match:
+        if b1_val != true_bit:
             mismatches += n
         total += n
 
-    _last_bit_cache["value"] = true_bit  
+    _last_bit_cache["value"] = true_bit
     return mismatches / total
 
-def encode_message(msg):
-    return "".join(CHARMAP.get(ch, '111111') for ch in msg)
-
-def build_output_string(flagged_str):
-    chunks = [flagged_str[i:i + 6] for i in range(0, len(flagged_str), 6)]
-    parts = []
-    for chunk in chunks:
-        char_disp = "[TAMPERED]" if "X" in chunk else REVMAP.get(chunk, "?")
-        parts.append(char_disp)
-    return "".join(parts)
-
-# ---------------------------------------------------------------
-# FASTAPI TELEMETRY ROUTE INTERFACE
-# ---------------------------------------------------------------
 @app.post("/simulate")
 def execute_message_simulation(req: SimulationRequest):
-    # 1. Capture payload strings
     data_str = req.message_str
     adv_mode = req.adversary_mode if req.adversary_mode != "none" else None
     
-    # 2. Parse text to binary array matrix strings
-    binary_data = encode_message(data_str)
+    # 1. Turn message text into binary
+    binary_data = "".join(CHARMAP.get(ch, '111111') for ch in data_str)
     n_bits = len(binary_data)
     
-    # Generate multi-qubit basis lengths scaling to text size
-    basis_str = req.basis.upper()
-    if len(basis_str) < n_bits:
-        basis_str = (basis_str * n_bits)[:n_bits]
+    # Pad or slice user basis input string to prevent script array crashes
+    basis_input = req.basis_str.upper().replace(" ", "")
+    if len(basis_input) < n_bits:
+        basis_input = (basis_input + "Z" * n_bits)[:n_bits]
+    elif len(basis_input) > n_bits:
+        basis_input = basis_input[:n_bits]
         
     flagged = []
     rates = []
+    human_readable_logs = []
     
-    # 3. Step every generated qubit through the execution loops
+    # 2. Run simulation loop bit-by-bit
     for i in range(n_bits):
-        rate = run_bit(basis_str[i], binary_data[i], adv_mode, SHOTS)
+        rate = run_bit(basis_input[i], binary_data[i], adv_mode)
         rates.append(rate)
-        flagged.append("X" if rate > EPSILON else binary_data[i])
         
+        is_error = rate > EPSILON
+        flagged.append("X" if is_error else binary_data[i])
+        
+        # Build simple, non-AI console log lines
+        char_index = i // 6
+        associated_letter = data_str[char_index] if char_index < len(data_str) else "?"
+        log_label = f"Qubit-{i+1} (Letter: '{associated_letter}', Bit: {binary_data[i]})"
+        
+        if is_error:
+            human_readable_logs.append(f"[🛑 ALERT] Interference on {log_label} -> Error: {int(rate*100)}% (Hacker detected)")
+        else:
+            human_readable_logs.append(f"[🟢 OK] Secure transfer on {log_label} -> Error: {int(rate*100)}% (Passed)")
+
     flagged_str = "".join(flagged)
     avg_rate = sum(rates) / len(rates) if rates else 0.0
-    verdict = "REJECTED - FORGERY DETECTED" if avg_rate > EPSILON else "ACCEPTED"
-    output_string = build_output_string(flagged_str)
+    verdict = "REJECTED" if avg_rate > EPSILON else "ACCEPTED"
     
-    # 4. Stream response metrics package straight to the browser
+    # 3. Build the exact output string format from 256bit.py
+    chunks = [flagged_str[k:k + 6] for k in range(0, len(flagged_str), 6)]
+    parts = []
+    for idx, chunk in enumerate(chunks):
+        orig_char = data_str[idx] if idx < len(data_str) else "?"
+        char_disp = "?" if "X" in chunk else orig_char
+        parts.append(f"{char_disp} {chunk}")
+    output_string_layout = "  ".join(parts)
+
     return {
         "mismatch_rate": float(avg_rate),
         "verdict": verdict,
         "binary_sent": binary_data,
-        "basis_string": basis_str,
+        "basis_string": basis_input,
         "flagged_binary": flagged_str,
-        "decoded_output": output_string
+        "decoded_output": output_string_layout,
+        "console_logs": human_readable_logs
     }
