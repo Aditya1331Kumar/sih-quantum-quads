@@ -61,8 +61,8 @@ export default function App() {
     setShowParticleAnim(true);
     setVerdict('TELEPORTING...');
 
-    // Pointing locally on your laptop workspaceee
-    const BACKEND_URL = 'https://sih-quantum-backend.onrender.com';
+    // Pointing locally on your laptop workspace
+    const BACKEND_URL = 'http://localhost:8000/simulate';
 
     try {
       const response = await fetch(BACKEND_URL, {
