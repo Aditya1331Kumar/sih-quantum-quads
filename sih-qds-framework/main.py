@@ -104,7 +104,12 @@ def run_bit(basis, true_bit, adversary_mode=None):
 
     mismatches, total = 0, 0
     for outcome, n in counts.items():
-        b1_val, a1_val, d1_val = outcome.split()
+        # Clean out any spaces to standardize across all Qiskit distributions
+        clean_outcome = outcome.replace(" ", "")
+        
+        # In Qiskit, outcomes map right-to-left: c2 (Bob bit) sits at index 0 (the first char)
+        b1_val = clean_outcome[0] if len(clean_outcome) > 0 else "0"
+        
         if b1_val != true_bit:
             mismatches += n
         total += n
