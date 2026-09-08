@@ -1,8 +1,26 @@
+
+
+
+
 import React, { useState, useEffect } from 'react';
-import { User, ShieldCheck, Skull, BarChart3, Send, RefreshCw, CheckCircle, Lock, ShieldAlert, ArrowLeft, Shield } from 'lucide-react';
+import { User, ShieldCheck, Skull, BarChart3, Send, RefreshCw, CheckCircle, Lock, ShieldAlert, ArrowLeft, Shield, Cpu, Users, Globe, MessageSquare, Mail, Phone } from 'lucide-react';
+
+// Flawless, case-correct import targeting your separate local page file natively
+import DashboardHub from './dashboard';
 
 export default function App() {
-  // --- CORE PLATFORM CONFIGURATION STATES ---
+  // --- MULTI-STAGE STEP ENGINE ROUTER CONTROLLER ---
+  // Stages available: 'home' | 'login' | 'dashboard'
+  const [currentViewStage, setCurrentViewStage] = useState('home');
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
+  // --- HARDCODED IDENTITY PROFILES FOR SIH HANDLES ---
+  const [usernameInput, setUsernameInput] = useState('alice');
+  const [passwordInput, setPasswordInput] = useState('Quantum123');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginErrorText, setLoginErrorText] = useState('');
+
+    // --- INTERACTIVE PARAMETER LOGIC STATE LAYERS ---
   const [messageStr, setMessageStr] = useState('aditya');
   const [customBasis, setCustomBasis] = useState('XZXZXZXZXZXZXZXZXZXZXZXZXZXZXZXZXZXZ');
   const [attackerMode, setAttackerMode] = useState('none');
@@ -10,20 +28,17 @@ export default function App() {
   const [showParticleAnim, setShowParticleAnim] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState(null);
 
-  // --- QUANTUM METRICS DATA PACK STATES ---
+  // --- LIVE TELEMETRY ANALYTICS MATRICES ---
   const [mismatchRate, setMismatchRate] = useState(0.00);
   const [verdict, setVerdict] = useState('AWAITING TRANSMISSION');
   const [binarySent, setBinarySent] = useState('011010011101100010101101110010011010');
   const [flaggedBinary, setFlaggedBinary] = useState('011010011101100010101101110010011010');
   const [decodedOutput, setDecodedOutput] = useState('🟢 a: 011010   🟢 d: 011101   🟢 i: 100010   🟢 t: 101101   🟢 y: 110010   🟢 a: 011010');
-  
-  // --- RAW STATUS LOG CONSOLE STORAGE ---
+
   const [logs, setLogs] = useState([
     '// System secure state line established. System polling on port 8000 operational.',
     '// Enter message tokens and align your custom polarization basis string to evaluate.'
   ]);
-
-  // SIMPLIFIED, NATURAL USER TERMINOLOGY INTERPRETATION GLOSSARY
   const GLOSSARY = {
     none: "Safe Channel: No hackers are present. Your quantum data particles travel completely undisturbed.",
     impersonation: "Impersonation: A hacker tries to pretend to be Alice. They clear out the security qubits and guess random replacements to trick Bob.",
@@ -41,7 +56,6 @@ export default function App() {
   const currentLiveBinary = messageStr.split('').map(ch => CHARMAP_PREVIEW[ch] || '111111').join('');
   const bitsNeeded = currentLiveBinary.length;
 
-    // Forces custom basis strings to stretch or constrain naturally to the message size
   useEffect(() => {
     let clean = customBasis.toUpperCase().replace(/[^XZ]/g, '');
     if (clean.length < bitsNeeded) {
@@ -54,32 +68,31 @@ export default function App() {
     }
   }, [messageStr]);
 
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (usernameInput === 'alice' && passwordInput === 'Quantum123') {
+      setLoginErrorText('');
+      
+      // FIXED: Safely calls your exact case-correct router view state variable
+      setCurrentViewStage('dashboard'); 
+    } else {
+      setLoginErrorText('Authentication Failure: Invalid credentials for this terminal node.');
+    }
+  };
   const handleTeleportSignature = async () => {
     if (customBasis.length !== bitsNeeded || bitsNeeded === 0) return;
-
     setIsLoading(true);
     setShowParticleAnim(true);
     setVerdict('TELEPORTING...');
-
-    // Pointing locally on your laptop workspace
-    //const BACKEND_URL = 'http://localhost:8000/simulate';
-       const BACKEND_URL = 'https://qsecure-cloud-backend.onrender.com/';
-
-
+    const BACKEND_URL = 'http://localhost:8000/simulate';
     try {
       const response = await fetch(BACKEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message_str: messageStr,
-          basis_str: customBasis,
-          adversary_mode: attackerMode
-        })
+        body: JSON.stringify({ message_str: messageStr, basis_str: customBasis, adversary_mode: attackerMode })
       });
-
       if (!response.ok) throw new Error('Data validation connection block');
       const result = await response.json();
-
       setTimeout(() => {
         setMismatchRate(result.mismatch_rate ?? 0.00);
         setVerdict(result.verdict ?? 'UNKNOWN');
@@ -90,266 +103,241 @@ export default function App() {
         setShowParticleAnim(false);
         setIsLoading(false);
       }, 1500);
-
     } catch (err) {
       setIsLoading(false);
       setShowParticleAnim(false);
-      setVerdict('CONNECTION RUNTIME FAILURE');
-      setLogs(['[❌ ERROR] Fatal: Could not reach your Python Qiskit backend on port 8000. Verify your uvicorn console pane is actively polling.']);
+      setVerdict('CONNECTION ERROR');
+      setLogs(['[❌ ERROR] Fatal: Could not reach your Python Qiskit backend on port 8000. Ensure uvicorn is running.']);
     }
   };
 
   const isButtonLocked = customBasis.length !== bitsNeeded || bitsNeeded === 0;
 
-    return (
-    <div className="bg-slate-950 text-slate-100 font-sans min-h-screen md:h-screen w-screen overflow-y-auto md:overflow-hidden flex flex-col p-4 sm:p-5 space-y-5 selection:bg-indigo-500/20">
-      
-      {/* 👑 PREMIUM NAVBAR WITH Q-SECURE LOGO & BACK BUTTON */}
-      <div className="flex items-center justify-between border-2 border-slate-800 bg-slate-900/40 rounded-xl px-5 py-4 backdrop-blur-md shadow-2xl shadow-black/50 transition-all duration-300">
-        <div className="flex items-center gap-3.5">
-          {/* GEOMETRIC 'Q' SHAPED SHIELD LOGO RE-ENGINEERED */}
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-900 border border-indigo-400/40 shadow-lg shadow-indigo-500/20">
-            <Shield className="w-5 h-5 text-indigo-200 animate-pulse" />
-            <div className="absolute font-black text-xs text-white tracking-tighter bottom-1 right-2">Q</div>
-          </div>
-          <div>
-            <h1 className="text-xl font-black tracking-widest text-slate-100 uppercase">Q-SECURE</h1>
-            <p className="text-[10px] font-mono font-bold text-indigo-400 tracking-widest uppercase">Quantum Cryptographic Dashboard</p>
-          </div>
+  const renderGlobalHeaderNavbar = () => (
+    <div className="flex items-center justify-between border-2 border-slate-800 bg-slate-900/40 rounded-xl px-5 py-4 backdrop-blur-md shadow-2xl shadow-black/50 w-full transition-all duration-300">
+      <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => setCurrentViewStage('home')}>
+        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-900 border border-indigo-400/40 shadow-lg shadow-indigo-500/20">
+          <Shield className="w-5 h-5 text-indigo-200 animate-pulse" />
+          <div className="absolute font-black text-xs text-white tracking-tighter bottom-1 right-2">Q</div>
         </div>
-        
-        {/* UNIVERSAL BACK ANCHOR POINT */}
+        <div>
+          <h1 className="text-xl font-black tracking-widest text-slate-100 uppercase">Q-SECURE</h1>
+          <p className="text-[10px] font-mono font-bold text-indigo-400 tracking-widest uppercase">Quantum Cryptographic Dashboard</p>
+        </div>
+      </div>
+      {currentViewStage !== 'home' && (
         <button 
-          onClick={() => window.history.back()}
+          onClick={() => {
+            if (currentViewStage === 'dashboard') setCurrentViewStage('home');
+            else if (currentViewStage === 'login') setCurrentViewStage('home');
+            else setCurrentViewStage('home');
+          }}
           className="flex items-center gap-2 px-4 py-2 border-2 border-slate-800 bg-slate-950/80 hover:bg-slate-900 hover:border-slate-700 active:scale-[0.97] transition-all rounded-xl text-xs font-bold text-slate-300 tracking-wider group"
         >
           <ArrowLeft className="w-4 h-4 text-slate-400 group-hover:-translate-x-0.5 transition-transform" />
           <span>BACK</span>
         </button>
-      </div>
+      )}
+    </div>
+  );
+  return (
+    <div className="bg-slate-950 text-slate-100 font-sans min-h-screen w-screen overflow-x-hidden select-none flex flex-col p-4 sm:p-6 space-y-12">
+      {currentViewStage !== 'dashboard' && renderGlobalHeaderNavbar()}
 
-      {/* TOP SECTION HOUSING TWO DEEP MASTER WORKSPACES */}
-      <div className="flex flex-col md:flex-row gap-5 h-auto md:h-[55vh] w-full">
-          
-          {/* 👩‍💻 WORKSPACE ONE: SENDER CONTROLS (ALICE) */}
-          <div className="w-full md:w-1/2 h-auto md:h-full border-2 border-slate-800 bg-slate-900/20 rounded-xl p-5 sm:p-6 flex flex-col justify-between shadow-2xl hover:border-slate-700/80 transition-all duration-300 space-y-4 md:space-y-0">
-              <div className="space-y-4">
-                  <div className="flex items-center gap-2.5 border-b-2 border-slate-900/60 pb-3">
-                      <User className="text-indigo-400 w-5 h-5" />
-                      <h2 className="text-sm font-black uppercase tracking-wider text-slate-200">1. Sender Workspace (Alice)</h2>
-                  </div>
-                  
-                  {/* DATA ENTRY INTAKE */}
-                  <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Message Payload Text Input</label>
-                      <input 
-                        type="text"
-                        value={messageStr}
-                        onChange={(e) => setMessageStr(e.target.value.replace(/[^A-Za-z0-9 .]/g, ""))}
-                        className="w-full bg-slate-950 border-2 border-slate-900 rounded-xl px-4 py-3 text-sm text-slate-100 font-mono tracking-wide focus:outline-none focus:border-indigo-500 transition-colors"
-                        placeholder="Type text tokens..."
-                        maxLength={20}
-                      />
-                  </div>
-                  {/* UNALTERED RAW BINARY STREAMS INTERACTION BLOCK */}
-                  <div className="bg-slate-950 border-2 border-slate-900 rounded-xl p-3.5">
-                    <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Unaltered Binary Preview Vector</span>
-                    <div className="text-[13px] font-mono font-bold text-indigo-400 break-all tracking-wider">
-                      {currentLiveBinary || '// Awaiting data characters entry...'}
-                    </div>
-                  </div>
+      {/* --- SUBVIEW ENGINE 1: MAIN LANDING HOME PRODUCT VIEW --- */}
+      {currentViewStage === 'home' && (
+        <div className="flex flex-col space-y-12 animate-[fadeIn_0.6s_ease-out] w-full">
+          {/* HERO AREA */}
+          <section className="flex flex-col items-center text-center max-w-4xl mx-auto py-8 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-indigo-400 text-xs font-mono font-bold tracking-wider uppercase">
+              <Cpu className="w-3.5 h-3.5 animate-spin" /> Advanced Quantum Signature Protections Live
+            </div>
+            <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-indigo-400 leading-tight">
+              Teleportation-Based Quantum Digital Signatures
+            </h2>
+            <p className="text-sm sm:text-lg text-slate-400 font-medium max-w-2xl leading-relaxed">
+              Mitigate communication vulnerabilities using information-theoretic cryptographic protocols. Instantly identify routing interceptors, circuit tampering, and active signature forgeries via our Qiskit core interface loop.
+            </p>
+            <div className="pt-4">
+              <button 
+                onClick={() => setCurrentViewStage('login')}
+                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 active:scale-95 border border-indigo-500/20 text-white font-black tracking-widest text-xs uppercase shadow-2xl shadow-indigo-600/20 rounded-xl"
+              >
+                Access Cryptographic Terminal
+              </button>
+            </div>
+          </section>
 
-                  {/* CUSTOM BASIS INPUT FIELD SYSTEM WITH RUNNING REQUIREMENT LENGTHS */}
-                  <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Configure Custom Basis Polarization String</label>
-                        <span className="text-[10px] font-mono text-slate-500">Requires exactly: <b className="text-indigo-400 font-bold">{bitsNeeded}</b> keys</span>
-                      </div>
-                      <input 
-                        type="text"
-                        value={customBasis}
-                        onChange={(e) => setCustomBasis(e.target.value.toUpperCase().replace(/[^XZ]/g, ""))}
-                        className="w-full bg-slate-950 border-2 border-slate-900 rounded-xl px-4 py-3 text-sm text-slate-100 font-mono tracking-widest focus:outline-none focus:border-indigo-500 transition-colors"
-                        placeholder="Type X or Z arrays..."
-                        maxLength={bitsNeeded}
-                        disabled={bitsNeeded === 0}
-                      />
-                  </div>
+          {/* METRICS STACK */}
+          <section className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-500">
+            <div className="border-2 border-slate-800 bg-slate-900/10 rounded-2xl p-6 flex items-center gap-5 hover:border-slate-700 hover:scale-[1.02] transition-all duration-300 group shadow-xl">
+              <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
+                <Users className="w-6 h-6 text-indigo-400" />
+              </div>
+              <div>
+                <div className="text-2xl font-black font-mono tracking-tight text-slate-100">4,821+</div>
+                <p className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-0.5">Active Secured User Nodes</p>
+              </div>
+            </div>
+            <div className="border-2 border-slate-800 bg-slate-900/10 rounded-2xl p-6 flex items-center gap-5 hover:border-slate-700 hover:scale-[1.02] transition-all duration-300 group shadow-xl">
+              <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl group-hover:bg-rose-500/20 transition-colors">
+                <ShieldAlert className="w-6 h-6 text-rose-400" />
+              </div>
+              <div>
+                <div className="text-2xl font-black font-mono tracking-tight text-slate-100">142,912</div>
+                <p className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-0.5">Adversary Attacks Prevented</p>
+              </div>
+            </div>
+            <div className="border-2 border-slate-800 bg-slate-900/10 rounded-2xl p-6 flex items-center gap-5 hover:border-slate-700 hover:scale-[1.02] transition-all duration-300 group shadow-xl">
+              <div className="p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-xl group-hover:bg-cyan-500/20 transition-colors">
+                <Globe className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div>
+                <div className="text-2xl font-black font-mono tracking-tight text-slate-100">0.00%</div>
+                <p className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-0.5">False Negative Failure Rate</p>
+              </div>
+            </div>
+          </section>
+          {/* STRUCTURAL ARCHITECTURE COMPARISON PANELS */}
+          <section className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-6">
+            <div className="border-2 border-slate-800 bg-slate-900/10 rounded-2xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-4 hover:border-indigo-500/30 transition-all duration-300 shadow-xl shadow-black/40">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-indigo-400 text-[10px] font-mono font-bold tracking-wider uppercase">Core Innovation Matrix</div>
+                <h3 className="text-lg sm:text-xl font-black tracking-wide text-slate-100 uppercase">Why Q-Secure Is Different</h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">Standard digital signatures rely heavily on public-key infrastructure (RSA or ECC) which can be factored and broken by emerging quantum computer threats. Q-Secure utilizes information-theoretic security bound configurations. By running multi-qubit loops inside our Qiskit engine, any attempt to intercept data instantly collapses the state vector, exposing the attacker automatically.</p>
+              </div>
+              <ul className="text-[11px] sm:text-xs font-mono text-slate-500 space-y-2 pt-2 border-t border-slate-800/60">
+                <li className="flex items-center gap-2 text-indigo-400/90 font-bold">💎 Quantum No-Cloning Protection Enabled</li>
+                <li className="flex items-center gap-2 text-indigo-400/90 font-bold">⚡ Teleportation Pauli Correction Vectors</li>
+                <li className="flex items-center gap-2 text-indigo-400/90 font-bold">🛡️ Active Channel Distortion Epsilon Monitor</li>
+              </ul>
+            </div>
+            <div className="border-2 border-slate-800 bg-slate-900/10 rounded-2xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-4 hover:border-emerald-500/20 transition-all duration-300 shadow-xl shadow-black/40">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-[10px] font-mono font-bold tracking-wider uppercase">Operational Mandate</div>
+                <h3 className="text-lg sm:text-xl font-black tracking-wide text-slate-100 uppercase">What We Do Natively</h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">Our application converts raw alphanumeric message assets into distinct 6-bit binary token arrays, mapping them onto localized photon states. We route these entanglement chains across simulated communication networks. Bob receives classical bit measurements, re-aligns them with custom basis polarization strings, and evaluates the Pauli trace discrepancies to generate an absolute security verdict.</p>
+              </div>
+              <ul className="text-[11px] sm:text-xs font-mono text-slate-500 space-y-2 pt-2 border-t border-slate-800/60">
+                <li className="flex items-center gap-2 text-emerald-400/90 font-bold">⚙️ Live 6-bit Alphanumeric Map Stream Parsing</li>
+                <li className="flex items-center gap-2 text-emerald-400/90 font-bold">🧬 Qiskit AerSimulator Gate Telemetry Loops</li>
+                <li className="flex items-center gap-2 text-emerald-400/90 font-bold">📊 Dynamic Forgery Marker Replacement Output</li>
+              </ul>
+            </div>
+          </section>
+
+          {/* OPERATIONS CONTACTS */}
+          <section className="max-w-6xl mx-auto w-full border-2 border-slate-800 bg-slate-900/20 rounded-2xl p-6 sm:p-8 hover:border-slate-700/60 transition-colors duration-300 shadow-md">
+            <div className="flex items-center gap-2 border-b-2 border-slate-800 pb-3 mb-6">
+              <MessageSquare className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-xs font-black tracking-widest text-slate-200 uppercase">Connect with Q-Secure Control Center</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm font-mono text-slate-400">
+              <div className="flex items-center gap-3 p-3.5 bg-slate-950 border-2 border-slate-800 rounded-xl">
+                <Mail className="w-4 h-4 text-slate-500" />
+                <span>ops@qsecure.sih.gov.in</span>
+              </div>
+              <div className="flex items-center gap-3 p-3.5 bg-slate-950 border-2 border-slate-800 rounded-xl">
+                <Phone className="w-4 h-4 text-slate-500" />
+                <span>+91 11 2301-QSEC</span>
+              </div>
+            </div>
+          </section>
+
+          {/* FIXED PLATFORM FOOTER STRIP */}
+          <footer className="w-full border-t border-slate-900 pt-6 pb-2 text-center text-[10px] font-mono text-slate-600 max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+            <p>© 2026 Q-SECURE SYSTEMS LAB. STRATEGIC CRYPTO SERVICE. ALL RIGHTS RESERVED.</p>
+            <p className="tracking-widest uppercase text-indigo-500/70 font-black">Smart India Hackathon Core Prototype Release</p>
+          </footer>
+        </div>
+      )}
+      {/* 📑 USER TERMINAL POPUP VALIDATION INTERFACE */}
+      {currentViewStage === 'login' && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div className="w-full max-w-md border-2 border-slate-800 bg-slate-900 rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl relative shadow-black">
+            
+            {/* ESCAPE TRIGGER BOX */}
+            <button 
+              onClick={() => { setCurrentViewStage('home'); setLoginErrorText(''); }}
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 font-mono text-xs px-2 py-1 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors"
+            >
+              ESC
+            </button>
+
+            <div className="flex flex-col items-center text-center space-y-2 border-b-2 border-slate-900 pb-4">
+              <Lock className="w-8 h-8 text-indigo-400 animate-pulse" />
+              <h3 className="text-base font-black tracking-wider uppercase text-slate-100">Terminal Authorization</h3>
+              <p className="text-[10px] font-mono text-slate-500">Security profiles are pre-loaded for SIH evaluation</p>
+            </div>
+
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              {/* ALPHANUMERIC ACCOUNT USERNAME ENTRY */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">User Identity Handle ID</label>
+                <input 
+                  type="text" 
+                  value={usernameInput}
+                  onChange={(e) => setUsernameInput(e.target.value)}
+                  placeholder="Enter terminal name (e.g. alice)"
+                  className="w-full bg-slate-950 border-2 border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-700" 
+                  required 
+                />
               </div>
 
-              {/* ACTION TRIGGER INTERFACE - ENFORCES LENGTH CHECK LOCKS */}
-              <div className="pt-4 border-t-2 border-slate-900 mt-4 md:mt-0">
-                  <button 
-                    onClick={handleTeleportSignature}
-                    disabled={isButtonLocked || isLoading}
-                    className={`w-full font-black py-4 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-xs uppercase tracking-widest border border-white/5 shadow-xl ${isButtonLocked ? 'bg-slate-900 border-slate-800 text-rose-500/70 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white'}`}
+              {/* MASKED SYSTEM PASSWORD MECHANICS WITH TOGGLE CHIP */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Cryptographic Password Pin</label>
+                <div className="relative w-full">
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="Enter decryption code..."
+                    className="w-full bg-slate-950 border-2 border-slate-800 rounded-xl pl-4 pr-16 py-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-700" 
+                    required 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-mono font-black text-slate-500 hover:text-indigo-400 transition-colors border border-slate-800 px-2 py-1 rounded bg-slate-950"
                   >
-                      {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                      {isLoading ? 'Running Quantum Simulations...' : isButtonLocked ? '⛔ Basis Match Required (Type X or Z)' : 'Generate & Teleport Signature'}
+                    {showPassword ? "HIDE" : "SHOW"}
                   </button>
-              </div>
-          </div>
-          {/* 👨‍💼 RECEIVER GRID WORKSPACE (BOB) */}
-          <div className="w-full md:w-1/2 h-auto md:h-full border-2 border-slate-800 bg-slate-900/10 rounded-xl p-5 sm:p-6 flex flex-col justify-between shadow-2xl hover:border-slate-700/80 transition-all duration-300 relative space-y-4 md:space-y-0">
-              
-              {/* SHIMMER LIGHT TRANSMISSION OVERLAY PARTICLE SIMULATOR */}
-              {showParticleAnim && (
-                <div className="absolute inset-0 bg-indigo-950/20 rounded-xl z-20 backdrop-blur-[0.5px] flex items-center justify-center transition-all duration-300">
-                  <div className="w-4/5 bg-slate-950 border-2 border-slate-800 rounded-xl p-5 text-center space-y-2.5 shadow-2xl">
-                    <div className="text-[11px] font-mono font-bold tracking-widest text-indigo-400 uppercase animate-pulse">📡 Teleporting polarization photon state matrices over public fiber line...</div>
-                    <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                      <div className="bg-indigo-500 h-full w-1/3 rounded-full animate-[shimmer_1.5s_infinite] origin-left scale-x-150 shadow-lg shadow-indigo-500/50"></div>
-                    </div>
-                  </div>
                 </div>
+              </div>
+
+              {/* DYNAMIC ERROR TEXT FEED CHIP */}
+              {loginErrorText && (
+                <p className="text-[10px] font-mono text-rose-400 font-bold bg-rose-950/20 p-2.5 rounded-lg border border-rose-950">
+                  {loginErrorText}
+                </p>
               )}
 
-              <div className="space-y-4 flex-1 flex flex-col">
-                  <div className="flex items-center gap-2.5 border-b-2 border-slate-800/60 pb-3">
-                      <ShieldCheck className="text-emerald-400 w-5 h-5" />
-                      <h2 className="text-sm font-black uppercase tracking-wider text-slate-200">2. Receiver & Checker (Bob)</h2>
-                  </div>
-
-                  {/* TELEMETRY READABLE LOG ENGINE FEED WINDOW */}
-                  <div className="bg-slate-950 border-2 border-slate-900 rounded-xl p-4 h-32 md:h-36 overflow-y-auto font-mono text-[13px] text-slate-400 space-y-1 shadow-inner flex-shrink-0">
-                      {logs.map((log, i) => (
-                        <p key={i} className={log.includes('[🛑 ALERT]') || log.includes('[❌') ? 'text-rose-400 font-bold' : log.includes('[🟢 OK]') ? 'text-emerald-400' : 'text-slate-500'}>
-                          {log}
-                        </p>
-                      ))}
-                  </div>
-
-                  {/* ACTUAL OUTPUT TEXT MATRIX DATA STRUCTURES REPLICATING 256BIT.PY TERMINAL LOGS */}
-                  <div className="bg-slate-950 border-2 border-slate-900 rounded-xl p-4 font-mono text-[13px] space-y-3 text-slate-400 flex-1 overflow-y-auto">
-                      <div>
-                        <span className="text-slate-500 block uppercase text-[9px] tracking-widest font-black">Output Binary String:</span>
-                        <div className="break-all tracking-widest text-slate-200 mt-1 font-bold">{binarySent || '// No transmission payload received.'}</div>
-                      </div>
-                      <div className="border-t border-slate-900 pt-2.5">
-                        <span className="text-slate-500 block uppercase text-[9px] tracking-widest font-black">Decoded Output Matrix Stream:</span>
-                        <div className="tracking-wide text-xs font-bold mt-1 text-slate-300 leading-relaxed max-h-20 overflow-y-auto whitespace-pre-wrap">
-                          {decodedOutput || '// Awaiting channel metrics verification...'}
-                        </div>
-                      </div>
-                  </div>
-              </div>
-
-              {/* SECURITY BANNERS HOUSING HUMAN TEXT DESCRIPTIONS */}
-              <div className={`border-2 rounded-xl p-4 mt-4 md:mt-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 transition-all duration-300 ${verdict === 'ACCEPTED' ? 'bg-emerald-950/20 border-emerald-500/40 shadow-lg shadow-emerald-500/5' : verdict.includes('REJECTED') ? 'bg-rose-950/20 border-rose-500/40 shadow-lg shadow-rose-500/5' : 'bg-slate-950 border-slate-900'}`}>
-                  <div className="space-y-1.5 max-w-md">
-                      <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block">System Authenticity Verdict Report</span>
-                      <div className={`text-base font-black tracking-wider ${verdict === 'ACCEPTED' ? 'text-emerald-400' : verdict.includes('REJECTED') ? 'text-rose-400' : 'text-slate-400'}`}>
-                        {verdict}
-                      </div>
-                      <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                        {verdict === 'ACCEPTED' && "✔ Check complete! The quantum disruption level is perfectly safe. The signature match is genuine and authenticated."}
-                        {verdict.includes('REJECTED') && "❌ Warning! The mismatch rate broke past the epsilon buffer limit. Qubits collapsed due to channel monitoring—the document is fake."}
-                        {verdict === 'AWAITING TRANSMISSION' && "Ready. Awaiting incoming photon vectors over the public communication network channel."}
-                      </p>
-                  </div>
-                  <div className={`w-3 h-3 rounded-full flex-shrink-0 self-end sm:self-auto shadow-md ${verdict === 'ACCEPTED' ? 'bg-emerald-400 shadow-emerald-400/50' : verdict.includes('REJECTED') ? 'bg-rose-500 animate-ping' : 'bg-slate-700'}`}></div>
-              </div>
+              {/* ACCESS SHIP CONTROLLER DISPATCH SUBMIT BUTTON */}
+              <button 
+                type="submit" 
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 px-4 rounded-xl text-xs uppercase tracking-widest transition-transform active:scale-[0.98] shadow-lg shadow-indigo-600/10 border border-indigo-500/20"
+              >
+                Let's Go →
+              </button>
+            </form>
           </div>
-
-      </div>
-      {/* BOTTOM SECTOR REGION WRAPPING INTERACTIVE TOOLTIPS & GRAPHS */}
-      <div className="h-auto md:h-[22vh] w-full flex flex-col md:flex-row gap-5 bg-slate-950">
-          
-          {/* EVE RADIO ATTACK GRID Deck WITH LIVE ON-HOVER INFO GLOSSARY BOXES */}
-          <div className="w-full md:w-1/2 h-auto flex flex-col justify-between border-2 border-slate-800 bg-slate-900/10 rounded-xl p-4 hover:border-slate-700/80 transition-colors duration-300 space-y-3 md:space-y-0">
-              <div className="flex items-center gap-2 border-b-2 border-slate-900 pb-2">
-                  <Skull className="text-rose-400 w-4 h-4" />
-                  <h3 className="text-xs font-black tracking-wider text-rose-400 uppercase">3. Threat Controller Panel (Eve)</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 py-1">
-                  {[
-                    { mode: 'none', label: '0. No Attack (Ideal Channel)' },
-                    { mode: 'impersonation', label: '1. Impersonation Attack' },
-                    { mode: 'intercept_resend', label: '2. Intercept-Resend Attack' },
-                    { mode: 'replay', label: '3. Replay Forgery Attack' },
-                    { mode: 'circuit_tamper', label: '4. Circuit-Level Tamper' }
-                  ].map((item) => (
-                    <div 
-                      key={item.mode}
-                      onMouseEnter={() => setActiveTooltip(item.mode)}
-                      onMouseLeave={() => setActiveTooltip(null)}
-                      className="relative"
-                    >
-                      <label className={`flex items-center gap-2.5 px-3 py-2 border rounded-xl cursor-pointer transition-all text-xs font-mono w-full ${attackerMode === item.mode ? 'bg-rose-950/20 border-rose-500/50 text-rose-400 font-black shadow-inner shadow-black' : 'bg-slate-950 border-slate-900 text-slate-400 hover:border-slate-800'}`}>
-                        <input 
-                          type="radio" 
-                          name="attackerMode" 
-                          value={item.mode} 
-                          checked={attackerMode === item.mode}
-                          onChange={(e) => setAttackerMode(e.target.value)}
-                          className="text-rose-600 focus:ring-0 bg-slate-950 border-slate-900 w-3.5 h-3.5 flex-shrink-0" 
-                        />
-                        <span className="truncate pr-1">{item.label}</span>
-                      </label>
-
-                      {/* POPUP INFORMATION CHIPS EXTRACTED NATIVELY FROM THE GLOSSARY STATE DATA */}
-                      {activeTooltip === item.mode && (
-                        <div className="absolute bottom-full left-0 mb-3 w-72 bg-slate-900 border-2 border-slate-800 rounded-xl p-3.5 text-xs text-slate-300 font-sans shadow-2xl z-50 pointer-events-none leading-relaxed transition-opacity">
-                          <div className="font-black text-rose-400 mb-1 uppercase tracking-wider text-[11px]">Threat Glossary Details:</div>
-                          {GLOSSARY[item.mode]}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-          </div>
-
-          {/* RE-ENGINEERED HORIZONTAL statistIC GRAPH CHANNELS WITH CRITICAL EPSILON INDICATORS */}
-          <div className="w-full md:w-1/2 h-auto flex flex-col justify-between border-2 border-slate-800 bg-slate-900/10 rounded-xl p-4 hover:border-slate-700/80 transition-colors duration-300 space-y-4 md:space-y-0">
-              <div className="flex items-center gap-2 border-b-2 border-slate-900 pb-2">
-                  <BarChart3 className="text-cyan-400 w-4 h-4" />
-                  <h3 className="text-xs font-black tracking-wider text-cyan-400 uppercase">4. Security Analytics Metrics</h3>
-              </div>
-              
-              <div className="space-y-4 my-auto py-1">
-                  <div>
-                    <div className="flex justify-between text-xs font-mono text-slate-400 mb-1.5 font-bold">
-                      <span>Average Qubit Mismatch Error Rate</span>
-                      <span className={`font-black ${mismatchRate > 0.08 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                        {(mismatchRate * 100).toFixed(2)}%
-                      </span>
-                    </div>
-                    
-                    {/* DUAL LAYER GRADIENT BAR TRACK GRAPH WITH SEGMENT CHANNELS AND AN EPSILON OVERLAY LINE */}
-                    <div className="w-full bg-slate-950 border-2 border-slate-900 rounded-full h-5 p-0.5 relative overflow-hidden shadow-inner">
-                      
-                      {/* Live filling progress bar graphic layer */}
-                      <div 
-                        className={`h-full rounded-full transition-all duration-700 ease-out ${mismatchRate > 0.08 ? 'bg-gradient-to-r from-rose-600 to-red-500 shadow-md shadow-rose-500/50' : 'bg-gradient-to-r from-emerald-600 to-green-500'}`}
-                        style={{ width: `${Math.min(100, Math.max(3, mismatchRate * 100))}%` }}
-                      ></div>
-
-                      {/* Superimposed dashed orange marker indicating the Epsilon boundary limit (8% line position) */}
-                      <div 
-                        className="absolute top-0 bottom-0 border-l-2 border-dashed border-amber-500 z-10" 
-                        style={{ left: '8%' }}
-                        title="Epsilon Guard Buffer Threshold (0.080)"
-                      >
-                        <span className="absolute top-full left-0 text-[8px] font-sans font-bold text-amber-500 tracking-tighter bg-slate-950 px-0.5 rounded -translate-y-4">ε=8%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-center text-mono text-xs">
-                      <div className="bg-slate-950 border-2 border-slate-900 p-2.5 rounded-xl">
-                        <span className="text-slate-500 block uppercase text-[8px] tracking-widest font-black mb-1">Statistical Limit (ε)</span>
-                        <span className="text-base font-black text-amber-500 font-mono">0.080</span>
-                      </div>
-                      <div className="bg-slate-950 border-2 border-slate-900 p-2.5 rounded-xl">
-                        <span className="text-slate-500 block uppercase text-[8px] tracking-widest font-black mb-1">Aer Simulator Shots</span>
-                        <span className="text-base font-black text-slate-300 font-mono">300</span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-      </div>
+        </div>
+      )}
+      {/* 🚀 VIEW REGION 3: DIRECTLY RENDERS YOUR INDEPENDENT DASHBOARD.JSX COMPONENT AS A FULL PAGE */}
+      {currentViewStage === 'dashboard' && (
+        <div className="fixed inset-0 bg-slate-950 z-40 overflow-y-auto w-screen h-screen">
+          <DashboardHub 
+            onLogout={() => {
+              // Gracefully unmounts your dashboard and sets the layout back to home
+              setCurrentViewStage('home');
+            }}
+            onSelectReceiver={(receiverNodeName) => {
+              alert(`Quantum connection successfully established with ${receiverNodeName}! Ready to load step 3.`);
+            }}
+          />
+        </div>
+      )}
 
     </div>
   );

@@ -63,6 +63,8 @@ export default function App() {
 
     // Pointing locally on your laptop workspace
     const BACKEND_URL = 'http://localhost:8000/simulate';
+     //  const BACKEND_URL = 'https://qsecure-cloud-backend.onrender.com/';
+
 
     try {
       const response = await fetch(BACKEND_URL, {
