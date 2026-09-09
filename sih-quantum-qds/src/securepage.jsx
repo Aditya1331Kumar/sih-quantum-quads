@@ -94,7 +94,7 @@ export default function SecurePage({ onBackToHub, onNavigateBack }) {
     setVerdict('TELEPORTING...');
 
     // Verified live production server URL endpoint path
-    const BACKEND_URL = 'https://onrender.com';
+       const BACKEND_URL = 'https://qsecure-cloud-backend.onrender.com/';
 
     try {
       const response = await fetch(BACKEND_URL, {
